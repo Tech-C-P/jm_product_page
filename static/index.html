@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f4f8;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #007bff;
+            color: white;
+            width: 100%;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            margin-top: 80px;
+        }
+
+        .form-container label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .form-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <a href="index.html">Generation</a>
+    <a href="preview.html">Preview</a>
+</div>
+
+<!-- Form for Generation -->
+<div class="form-container">
+    <h2>Generate Content</h2>
+    <form id="generationForm">
+        <label for="storename">Store Name:</label>
+        <input type="text" id="storename" name="storename" placeholder="Enter store name" required>
+
+        <label for="imageurl">Image URL:</label>
+        <input type="url" id="imageurl" name="imageurl" placeholder="Enter image URL" required>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('generationForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const storename = document.getElementById('storename').value;
+        const imageurl = document.getElementById('imageurl').value;
+
+        try {
+            const url = `http://0.0.0.0:8000/generate?storename=${encodeURIComponent(storename)}&image_url=${encodeURIComponent(imageurl)}`;
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                alert('Generation request successful!');
+            } else {
+                alert('Generation failed.');
+            }
+        } catch (error) {
+            alert('Error submitting generation request.');
+        }
+    });
+</script>
+
+
+</body>
+</html>
