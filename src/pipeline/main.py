@@ -21,8 +21,8 @@ logging.basicConfig(
 )
 
 
-def update_processed_necklaces(necklace_id: str, status: bool):
-    response = upload_productpage_logs(necklace_id, status)
+def update_processed_necklaces(necklace_id: str, status: bool, model_name: str):
+    response = upload_productpage_logs(necklace_id, status, model_name=model_name)
 
 
 def get_random_clothing_combinations(clothing_list: List[str], colors: List[str], count: int = 5) -> List[str]:
@@ -42,9 +42,11 @@ def combined_image_and_video_generation(storename, image_url):
         necklace_data = fetch_necklace_offset_each_store(storename=storename)
         url, typee = fetch_model_body_type(image_url=image_url)
 
+        model_name = url.split("/")[-1].split(".")[0]
+
         for necklace in necklace_data:
             necklace_id = necklace.necklace_id
-            response = upload_productpage_logs(necklace_id, True)
+            response = upload_productpage_logs(necklace_id, True, model_name=model_name)
             if response['status'] == "error":
                 print("Skipping", necklace_id)
                 logging.info(f"Skipping {necklace_id} - already processed")
@@ -138,18 +140,21 @@ def combined_image_and_video_generation(storename, image_url):
                     'images_url': str([result['url'] for result in image_results.nto_results])
                 }
 
-                update_processed_necklaces(
-                    necklace_id=necklace_id,
-                    status=True
-
-                )
-
                 logging.info("Completed combined image and video generation process")
                 upload_information_to_new_table(necklace_id=necklace_id,
                                                 nto_images_urls=[result['url'] for result in image_results.nto_results],
                                                 cto_images_urls=cto_urls,
                                                 mto_urls=mto_urls,
-                                                video_urls=video_result.video_url)
+                                                video_urls=video_result.video_url,
+                                                model_name=model_name
+                                                )
+
+                update_processed_necklaces(
+                    necklace_id=necklace_id,
+                    status=True,
+                    model_name=model_name
+
+                )
 
 
 
@@ -157,11 +162,14 @@ def combined_image_and_video_generation(storename, image_url):
 
             except Exception as e:
 
+                raise e
+
                 logging.error(f"Error processing {necklace_id}: {str(e)}")
 
                 update_processed_necklaces(
                     necklace_id=necklace_id,
-                    status=False
+                    status=False,
+                    model_name=model_name
 
                 )
         return {
@@ -170,6 +178,7 @@ def combined_image_and_video_generation(storename, image_url):
 
 
     except Exception as e:
+        raise e
         logging.error(f"Fatal error in combined generation process: {str(e)}")
         return {
             'status': 'error',
@@ -178,7 +187,7 @@ def combined_image_and_video_generation(storename, image_url):
 
 
 if __name__ == "__main__":
-    image_url = "https://lvuhhlrkcuexzqtsbqyu.supabase.co/storage/v1/object/public/JewelmirrorModelImages/M0X0f16ad748dd979a48d3f79b4J.png"
+    image_url = "https://lvuhhlrkcuexzqtsbqyu.supabase.co/storage/v1/object/public/JewelmirrorModelImages/p_01.png"
     storename = "ChamundiJewelsMandir"
     result = combined_image_and_video_generation(image_url=image_url, storename=storename)
     print(f"Process completed with status: {result}")

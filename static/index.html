@@ -112,7 +112,7 @@
         const imageurl = document.getElementById('imageurl').value;
 
         try {
-            const url = `http://0.0.0.0:8000/generate?storename=${encodeURIComponent(storename)}&image_url=${encodeURIComponent(imageurl)}`;
+            const url = `http://0.0.0.0:7860/generate?storename=${encodeURIComponent(storename)}&image_url=${encodeURIComponent(imageurl)}`;
 
             const response = await fetch(url, {
                 method: 'POST',

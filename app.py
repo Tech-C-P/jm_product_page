@@ -6,7 +6,6 @@ from starlette.staticfiles import StaticFiles
 
 from src.api.api import router
 
-# Create FastAPI instance
 app = FastAPI()
 
 # Add CORS middleware
@@ -18,16 +17,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount the static directory for serving static files
 DIR = Path(__file__).parent
 static_folder = DIR / "static"
 app.mount("/static", StaticFiles(directory=static_folder, html=True), name="static")
 
-# Include the API router
 app.include_router(router)
 
 
-# Serve HTML for unmatched routes
 @app.get("/{full_path:path}")
 async def serve_html(full_path: str):
     file_path = static_folder / full_path
@@ -39,4 +35,4 @@ async def serve_html(full_path: str):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=7860)

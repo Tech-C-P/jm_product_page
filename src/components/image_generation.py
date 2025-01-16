@@ -3,10 +3,11 @@ project @ batch_generation_support_team
 created @ 2025-01-07
 author  @ github.com/ishworrsubedii
 """
-from typing import List, Dict
-import requests
 from dataclasses import dataclass
+from typing import List, Dict
 from urllib.parse import quote
+
+import requests
 
 
 @dataclass
@@ -35,7 +36,6 @@ def batch_image_generation(
         x_offset: float = 0.2,
         y_offset: float = 0.35
 ) -> ImageGenerationResult:
-
     base_url = "https://techconspartners-video-gen.hf.space/product_page_image_generation"
 
     encoded_model_image = quote(model_image)
